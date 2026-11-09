@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test and report
+    # A self-hosted runner works on this computer, so localhost reaches the receiver.
+    runs-on: [self-hosted, lab-mid]
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: cmd
+    steps:
+      - name: Check out the pushed revision
+        uses: actions/checkout@v7
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run automated tests
+        id: tests
+        run: npm run test:ci
+
+      - name: Send report to local receiver
+        if: always()
+        env:
+          TEST_OUTCOME: ${{ steps.tests.outcome }}
+        run: node scripts/send-report.js
+
+      - name: Email report
+        if: always()
+        continue-on-error: true
+        env:
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+          SMTP_HOST: ${{ vars.SMTP_HOST }}
+          SMTP_PORT: ${{ vars.SMTP_PORT }}
+        run: node scripts/send-email.js
+
+  deploy-pages:
+    name: Publish GitHub Pages demo
+    # Publishes only after every test for this revision has passed.
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out the tested revision
+        uses: actions/checkout@v7
+
+      - name: Build the static demo
+        run: node scripts/build-pages.js
+
+      - name: Upload the static demo
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+      - name: Publish to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
