@@ -1,0 +1,7 @@
+node_modules/
+data/
+_site/
+test-results.json
+ci-report.json
+test-report.json
+report-history/

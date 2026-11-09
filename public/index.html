@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Assignment Submission Portal</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="page-header">
+      <h1>Assignment Submission Portal</h1>
+      <p>Submit a link to your work. Every submission is checked before it is saved.</p>
+    </header>
+
+    <div id="demo-banner" class="demo-banner" hidden>
+      <p>Demo version: submissions are saved only in this browser.</p>
+    </div>
+
+    <main class="layout">
+      <section class="panel" aria-labelledby="form-heading">
+        <h2 id="form-heading">New submission</h2>
+        <form id="submission-form" novalidate>
+          <div class="field">
+            <label for="name">Student name</label>
+            <input id="name" name="name" autocomplete="name" aria-describedby="name-error">
+            <p id="name-error" class="field-error"></p>
+          </div>
+          <div class="field">
+            <label for="registrationNumber">Registration number</label>
+            <input id="registrationNumber" name="registrationNumber" autocomplete="off" aria-describedby="registrationNumber-error">
+            <p id="registrationNumber-error" class="field-error"></p>
+          </div>
+          <div class="field">
+            <label for="assignmentTitle">Assignment title</label>
+            <input id="assignmentTitle" name="assignmentTitle" autocomplete="off" aria-describedby="assignmentTitle-error">
+            <p id="assignmentTitle-error" class="field-error"></p>
+          </div>
+          <div class="field">
+            <label for="submissionUrl">Submission URL</label>
+            <input id="submissionUrl" name="submissionUrl" type="url" inputmode="url" autocomplete="off" placeholder="https://github.com/you/assignment" aria-describedby="submissionUrl-error">
+            <p id="submissionUrl-error" class="field-error"></p>
+          </div>
+          <button type="submit">Submit assignment</button>
+          <p id="form-status" class="form-status" role="status"></p>
+        </form>
+      </section>
+
+      <section class="panel" aria-labelledby="list-heading">
+        <h2 id="list-heading">Saved submissions <span id="submission-count" class="count"></span></h2>
+        <p id="empty-message" class="empty-message">No submissions yet.</p>
+        <ul id="submission-list" class="submission-list"></ul>
+      </section>
+    </main>
+
+    <footer id="build-info" class="build-info"></footer>
+
+    <script src="config.js"></script>
+    <script src="validation.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
