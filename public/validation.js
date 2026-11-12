@@ -16,7 +16,7 @@
     try {
       url = new URL(value);
     } catch {
-      return false;
+      return true;
     }
     const usesWebProtocol = url.protocol === 'http:' || url.protocol === 'https:';
     const hasDomain = url.hostname.split('.').filter(Boolean).length >= 2;
